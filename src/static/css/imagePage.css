@@ -1,0 +1,13 @@
+#_ydb_ss_toggle_slideshow {
+  display: inline-block;
+}
+
+#_ydb_ss_toggle_slideshow_random {
+  z-index: 202;
+  position: relative;
+}
+#_ydb_ss_label_slideshow_random {
+  z-index: 202;
+  position: relative;
+  user-select: none;
+}
