@@ -25,6 +25,7 @@ import {
 
 const commonCSS = require("./static/css/style.css").toString();
 const imagePageCSS = require("./static/css/imagePage.css").toString();
+const hideCSS = require("./static/css/hide.css").toString();
 
 (function() {
   function init() {
@@ -38,8 +39,11 @@ const imagePageCSS = require("./static/css/imagePage.css").toString();
       window.location.pathname.match(/^\/(images)?.\d{1}.*$/)
       // TODO: Get random button and first image of gallery
       // window.location.pathname.match(/^\/galleries.\d{1}.*$/)
-    )
+    ) {
       injectStyle(imagePageCSS);
+    } else {
+      injectStyle(hideCSS);
+    }
 
     const objects = {
       toggleSlideshow: addElem(
