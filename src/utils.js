@@ -45,17 +45,17 @@ export function register() {
         parameter: "slideshowTimeout",
         validation: { type: "int", min: 1, default: 15 }
       },
-      {
-        type: "input",
-        name: "Slideshow video skip threshold (s)",
-        parameter: "slideshowVideoSinglePlaybackThreshold",
-        validation: { type: "int", default: 15 }
-      },
-      {
-        type: "checkbox",
-        name: "Skip to next if video is longer than the threshold",
-        parameter: "shouldSkipVideoTimeout"
-      },
+      // {
+      //   type: "input",
+      //   name: "Slideshow video skip threshold (s)",
+      //   parameter: "slideshowVideoSinglePlaybackThreshold",
+      //   validation: { type: "int", default: 15 }
+      // },
+      // {
+      //   type: "checkbox",
+      //   name: "Skip to next if video is longer than the threshold",
+      //   parameter: "shouldSkipVideoTimeout"
+      // },
       { type: "checkbox", name: "Random?", parameter: "slideshowRandom" },
       {
         type: "checkbox",
@@ -70,6 +70,7 @@ export function initCommon() {
   if (unsafeWindow._YDB_public == undefined) unsafeWindow._YDB_public = {};
   if (unsafeWindow._YDB_public.settings == undefined)
     unsafeWindow._YDB_public.settings = {};
+  window.ydbSlideshowPaused = false;
 }
 
 export function initState() {
@@ -101,4 +102,27 @@ export function updateSettings(settings) {
 
 export function injectStyle(style) {
   GM_addStyle(style);
+}
+
+function pauseSlideshow() {
+  if (window.ydbSlideshowTimeout) {
+    window.ydbSlideshowTimeout.pause();
+    document.getElementById("_ydb_ss_pause_resume_button").innerHTML = "Resume";
+  }
+}
+
+function resumeSlideshow() {
+  if (window.ydbSlideshowTimeout) {
+    window.ydbSlideshowTimeout.resume();
+    document.getElementById("_ydb_ss_pause_resume_button").innerHTML = "Pause";
+  }
+}
+
+export function handlePauseResume() {
+  if (!window.ydbSlideshowPaused) {
+    pauseSlideshow();
+  } else {
+    resumeSlideshow();
+  }
+  window.ydbSlideshowPaused = !window.ydbSlideshowPaused;
 }

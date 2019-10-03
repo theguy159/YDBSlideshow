@@ -1,19 +1,31 @@
 import { write, getState, getSettings, updateSettings } from "./utils";
 import { YDB_CONTAINER } from "./constants";
+import Timer from "tiny-timer";
+
+function handleTimeout(settings) {
+  let random_href = document.getElementsByClassName("js-rand")[0].href;
+  let next_href = document.getElementsByClassName("js-next")[0].href;
+
+  window.location = settings.slideshowRandom ? random_href : next_href;
+}
 
 export function setSlideshowTimeout() {
   const state = getState();
   const settings = getSettings();
-  let timeout = settings.slideshowTimeout * 1000;
-  let videoThreshold = settings.slideshowVideoSinglePlaybackThreshold;
-  let shouldSkipVideoTimeout = settings.shouldSkipVideoTimeout;
-  let random_href = document.getElementsByClassName("js-rand")[0].href;
-  let next_href = document.getElementsByClassName("js-next")[0].href;
-  let enabled = state.slideshowEnabled;
+
+  const timeout = settings.slideshowTimeout * 1000;
+  // const {
+  //   slideshowVideoSinglePlaybackThreshold: videoThreshold,
+  //   shouldSkipVideoTimeout
+  // } = settings;
+
+  const { slideshowEnabled: enabled } = state;
+
   if (enabled) {
-    window.ydbSlideshowTimeout = setTimeout(function() {
-      window.location = settings.slideshowRandom ? random_href : next_href;
-    }, timeout);
+    const slideshowTimer = new Timer({ interval: 1000 });
+    slideshowTimer.on("done", () => handleTimeout(settings));
+    slideshowTimer.start(timeout);
+    window.ydbSlideshowTimeout = slideshowTimer;
   }
 }
 
@@ -30,7 +42,7 @@ export function toggleSlideshow() {
         .dispatchEvent(new MouseEvent("click"));
     setSlideshowTimeout();
   } else {
-    clearTimeout(window.ydbSlideshowTimeout);
+    window.ydbSlideshowTimeout.stop();
   }
 }
 

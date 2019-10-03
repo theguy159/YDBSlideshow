@@ -2,6 +2,7 @@ const merge = require("webpack-merge");
 const common = require("./webpack.common.js");
 const version = JSON.stringify(require("./package.json").version);
 const WebpackUserscript = require("webpack-userscript");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = merge(common, {
   mode: "production",
@@ -39,5 +40,17 @@ module.exports = merge(common, {
           "https://github.com/theguy159/YDBSlideshow/raw/master/dist/YDBSlideshow.meta.js"
       }
     })
-  ]
+  ],
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            drop_console: true
+          }
+        }
+      })
+    ]
+  }
 });

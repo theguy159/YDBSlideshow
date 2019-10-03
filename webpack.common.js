@@ -9,6 +9,16 @@ module.exports = {
       {
         test: /\.css$/i,
         use: ["to-string-loader", "css-loader"]
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: ["babel-loader"]
+      },
+      {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: "javascript/auto"
       }
     ]
   },

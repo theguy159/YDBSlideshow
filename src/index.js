@@ -14,7 +14,8 @@ import {
   injectStyle,
   register,
   getState,
-  getSettings
+  getSettings,
+  handlePauseResume
 } from "./utils";
 
 import {
@@ -22,13 +23,13 @@ import {
   setSlideshowTimeout,
   handleToggleSlideshowRandomCheckbox
 } from "./slideshow";
-
 const commonCSS = require("./static/css/style.css").toString();
 const imagePageCSS = require("./static/css/imagePage.css").toString();
 const hideCSS = require("./static/css/hide.css").toString();
 
 (function() {
   function init() {
+    if (window.location.pathname === "/") return;
     const settings = getSettings();
     initCommon();
     initState();
@@ -80,15 +81,27 @@ const hideCSS = require("./static/css/hide.css").toString();
         },
         document.querySelector("#content>.block:first-child")
       ),
+      pauseResumeSlideshowButton: addElem(
+        "a",
+        {
+          id: "_ydb_ss_pause_resume_button",
+          className: "",
+          style: { display: "none" },
+          innerHTML: "Pause",
+          events: [{ t: "click", f: handlePauseResume }]
+        },
+        document.querySelector("#content>.block:first-child")
+      ),
       disableFsButton: document.getElementById("_ydb_fs_disable")
     };
-
-    document
-      .getElementsByClassName("header__force-right")[0]
-      .insertBefore(
-        objects.toggleSlideshow,
-        document.getElementsByClassName("header__force-right")[0].childNodes[0]
-      );
+    if (document.getElementsByClassName("header__force-right"))
+      document
+        .getElementsByClassName("header__force-right")[0]
+        .insertBefore(
+          objects.toggleSlideshow,
+          document.getElementsByClassName("header__force-right")[0]
+            .childNodes[0]
+        );
 
     if (objects.disableFsButton) {
       objects.disableFsButton.addEventListener("click", () => {
@@ -97,8 +110,10 @@ const hideCSS = require("./static/css/hide.css").toString();
         }
       });
     }
-
     setSlideshowTimeout();
+    unsafeWindow.addEventListener("keydown", e => {
+      if (e.code === "KeyP") handlePauseResume();
+    });
   }
 
   init();

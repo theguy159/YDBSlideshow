@@ -1,3 +1,27 @@
 #_ydb_ss_toggle_slideshow {
   display: none;
 }
+._fs #_ydb_ss_pause_resume_button {
+  left: 0;
+  top: 2rem;
+  position: fixed;
+  z-index: 202;
+  display: inline-block !important;
+  opacity: 0.3;
+  font-size: 120%;
+  line-height: 205%;
+}
+
+#_ydb_ss_pause_resume_button:hover {
+  opacity: 0.7;
+  cursor: pointer;
+  user-select: none;
+}
+
+._fs #_ydb_ss_label_slideshow_random {
+  top: 1.4rem;
+}
+
+._fs #_ydb_ss_toggle_slideshow_random {
+  top: 1.4rem;
+}
