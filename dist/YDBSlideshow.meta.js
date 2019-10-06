@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        YDBSlideshow
-// @version     "0.2.0"
+// @version     "0.3.0"
 // @author      theguy159
 // @description An YDB plugin for automatic slideshow on derpibooru.org
 // @homepage    https://tehvoid.net
@@ -22,6 +22,7 @@
 // @exclude     *://*.o53xo.mrsxe4djmjxw64tvfzxxezy.*.json
 // @exclude     *://*.mrsxe4djmjxw64tvfzxxezy.*.json
 // @grant       GM_addStyle
+// @runAt       document-end
 // @require     https://github.com/stsyn/derpibooruscripts/raw/master/YouBooru/lib.js
 // @downloadURL https://github.com/theguy159/YDBSlideshow/raw/master/dist/YDBSlideshow.user.js
 // @updateURL   https://github.com/theguy159/YDBSlideshow/raw/master/dist/YDBSlideshow.meta.js

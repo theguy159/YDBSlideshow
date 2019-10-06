@@ -41,21 +41,26 @@ export function register() {
     s: [
       {
         type: "input",
-        name: "Slideshow timeout",
+        name: "Slideshow timeout (s)",
         parameter: "slideshowTimeout",
         validation: { type: "int", min: 1, default: 15 }
       },
-      // {
-      //   type: "input",
-      //   name: "Slideshow video skip threshold (s)",
-      //   parameter: "slideshowVideoSinglePlaybackThreshold",
-      //   validation: { type: "int", default: 15 }
-      // },
-      // {
-      //   type: "checkbox",
-      //   name: "Skip to next if video is longer than the threshold",
-      //   parameter: "shouldSkipVideoTimeout"
-      // },
+      {
+        type: "input",
+        name: "Slideshow video skip threshold (s)",
+        parameter: "slideshowVideoSinglePlaybackThreshold",
+        validation: { type: "int", default: 15 }
+      },
+      {
+        type: "checkbox",
+        name: "Skip if video is longer than the threshold",
+        parameter: "shouldSkipVideoTimeout"
+      },
+      {
+        type: "checkbox",
+        name: "Video will always play to the end",
+        parameter: "slideshowVideoPlaysRegardless"
+      },
       { type: "checkbox", name: "Random?", parameter: "slideshowRandom" },
       {
         type: "checkbox",
@@ -80,6 +85,9 @@ export function initState() {
     state.NU1 = true;
     write(state);
   }
+  if (state.slideshowEnabled) {
+    console.debug("slideshow enabled");
+  }
 }
 
 export function initSettings() {
@@ -93,6 +101,8 @@ export function initSettings() {
   if (settings.slideshowRandom === undefined) settings.slideshowRandom = false;
   if (settings.slideshowFullscreen === undefined)
     settings.slideshowFullscreen = false;
+  if (settings.slideshowVideoPlaysRegardless === undefined)
+    settings.slideshowVideoPlaysRegardless = false;
   localStorage[YDB_CONTAINER] = JSON.stringify(settings);
 }
 
@@ -105,6 +115,10 @@ export function injectStyle(style) {
 }
 
 function pauseSlideshow() {
+  const maybeVideo = document.getElementById("image-display");
+  let isVideo = false;
+  if (maybeVideo.tagName.toLowerCase() === "video") isVideo = true;
+  if (isVideo) maybeVideo.pause();
   if (window.ydbSlideshowTimeout) {
     window.ydbSlideshowTimeout.pause();
     document.getElementById("_ydb_ss_pause_resume_button").innerHTML = "Resume";
@@ -112,6 +126,10 @@ function pauseSlideshow() {
 }
 
 function resumeSlideshow() {
+  const maybeVideo = document.getElementById("image-display");
+  let isVideo = false;
+  if (maybeVideo.tagName.toLowerCase() === "video") isVideo = true;
+  if (isVideo) maybeVideo.play();
   if (window.ydbSlideshowTimeout) {
     window.ydbSlideshowTimeout.resume();
     document.getElementById("_ydb_ss_pause_resume_button").innerHTML = "Pause";

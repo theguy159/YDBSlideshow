@@ -32,6 +32,7 @@ module.exports = merge(common, {
           "*://*.mrsxe4djmjxw64tvfzxxezy.*.json"
         ],
         grant: ["GM_addStyle"],
+        runAt: "document-end",
         require:
           "https://github.com/stsyn/derpibooruscripts/raw/master/YouBooru/lib.js",
         downloadURL:

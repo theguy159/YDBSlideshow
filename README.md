@@ -6,8 +6,10 @@ WIP replacement of [this](https://gist.github.com/theguy159/3f9623f0921c93c6229e
 
 ### Features:
 
-- Automatically advance to the next picture
-- Pause & resume (keyboard shortcut: P)
+- Automatically advance to the next picture or video
+- Skip video after specified threshold
+- Setting that makes the videos play until the end no matter the timeout set
+- Pause & resume (keyboard shortcut: `P`)
 
 ## installation:
 
@@ -18,6 +20,4 @@ WIP replacement of [this](https://gist.github.com/theguy159/3f9623f0921c93c6229e
 
 ### Todo:
 
-- Video handling
-- Start the timer only after the image has been fully loaded
 - Add CI instead of manually building the plugin
