@@ -5,10 +5,14 @@ import Timer from "tiny-timer";
 const settings = getSettings();
 
 export function handleTimeout(settings) {
-  let random_href = document.getElementsByClassName("js-rand")[0].href;
-  let next_href = document.getElementsByClassName("js-next")[0].href;
+  const state = getState();
+  const { slideshowEnabled } = state;
+  if (slideshowEnabled) {
+    let random_href = document.getElementsByClassName("js-rand")[0].href;
+    let next_href = document.getElementsByClassName("js-next")[0].href;
 
-  window.location = settings.slideshowRandom ? random_href : next_href;
+    window.location = settings.slideshowRandom ? random_href : next_href;
+  }
 }
 
 export function setSlideshowTimeout(
