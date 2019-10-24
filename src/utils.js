@@ -6,6 +6,8 @@ import {
   YDB_STATE
 } from "./constants";
 
+import { toggleSlideshow } from "./slideshow";
+
 export function getState() {
   let state;
   try {
@@ -66,6 +68,11 @@ export function register() {
         type: "checkbox",
         name: "Auto fullscreen? (requires Resurrected Derp Fullscreen)",
         parameter: "slideshowFullscreen"
+      },
+      {
+        type: "checkbox",
+        name: "Hide image until fully loaded",
+        parameter: "slideshowHideImageUntilLoaded"
       }
     ]
   };
@@ -103,6 +110,8 @@ export function initSettings() {
     settings.slideshowFullscreen = false;
   if (settings.slideshowVideoPlaysRegardless === undefined)
     settings.slideshowVideoPlaysRegardless = false;
+  if (settings.slideshowHideImageUntilLoaded === undefined)
+    settings.slideshowHideImageUntilLoaded = false;
   localStorage[YDB_CONTAINER] = JSON.stringify(settings);
 }
 
@@ -132,15 +141,20 @@ function resumeSlideshow() {
   if (isVideo) maybeVideo.play();
   if (window.ydbSlideshowTimeout) {
     window.ydbSlideshowTimeout.resume();
-    document.getElementById("_ydb_ss_pause_resume_button").innerHTML = "Pause";
+  } else {
+    toggleSlideshow();
   }
+  document.getElementById("_ydb_ss_pause_resume_button").innerHTML = "Pause";
 }
 
 export function handlePauseResume() {
-  if (!window.ydbSlideshowPaused) {
+  const state = getState();
+  const { slideshowEnabled } = state;
+  if (!window.ydbSlideshowPaused && slideshowEnabled) {
     pauseSlideshow();
+    window.ydbSlideshowPaused = true;
   } else {
     resumeSlideshow();
+    window.ydbSlideshowPaused = false;
   }
-  window.ydbSlideshowPaused = !window.ydbSlideshowPaused;
 }

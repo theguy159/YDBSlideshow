@@ -31,12 +31,14 @@ const hideCSS = require("./static/css/hide.css").toString();
 
 (function() {
   if (window.location.pathname === "/") return;
-  const settings = getSettings();
   initCommon();
   initState();
   initSettings();
   register();
   injectStyle(commonCSS);
+  const settings = getSettings();
+  const state = getState();
+  const { slideshowEnabled } = state;
   if (
     window.location.pathname.match(/^\/(images)?.\d{1}.*$/)
     // TODO: Get random button and first image of gallery
@@ -46,7 +48,7 @@ const hideCSS = require("./static/css/hide.css").toString();
   } else {
     injectStyle(hideCSS);
   }
-
+  if (document.querySelector("#content>.block:first-child") === null) return;
   const objects = {
     toggleSlideshow: addElem(
       "a",
@@ -88,7 +90,7 @@ const hideCSS = require("./static/css/hide.css").toString();
         id: "_ydb_ss_pause_resume_button",
         className: "",
         style: { display: "none" },
-        innerHTML: "Pause",
+        innerHTML: slideshowEnabled ? "Pause" : "Resume",
         events: [{ t: "click", f: handlePauseResume }]
       },
       document.querySelector("#content>.block:first-child")
@@ -96,6 +98,17 @@ const hideCSS = require("./static/css/hide.css").toString();
     disableFsButton: document.getElementById("_ydb_fs_disable"),
     image: document.getElementById("image-display")
   };
+  if (
+    settings.slideshowHideImageUntilLoaded &&
+    objects.image.tagName.toLowerCase() !== "video"
+  ) {
+    if (objects.image.complete) {
+      objects.image.classList.add("hideUntilLoaded");
+      setTimeout(() => objects.image.classList.add("loaded"), 50);
+    } else {
+      objects.image.classList.add("hideUntilLoaded");
+    }
+  }
   if (document.getElementsByClassName("header__force-right"))
     document
       .getElementsByClassName("header__force-right")[0]
@@ -117,7 +130,10 @@ const hideCSS = require("./static/css/hide.css").toString();
     if (objects.image.tagName.toLowerCase() === "video") {
       handleVideo();
     } else {
-      objects.image.addEventListener("load", () => setSlideshowTimeout());
+      objects.image.addEventListener("load", () => {
+        objects.image.classList.add("loaded");
+        setSlideshowTimeout();
+      });
     }
   }
   unsafeWindow.addEventListener("keydown", e => {

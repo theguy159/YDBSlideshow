@@ -18,7 +18,6 @@ export function handleTimeout(settings) {
 export function setSlideshowTimeout(
   timeout = settings.slideshowTimeout * 1000
 ) {
-  console.debug("SlideshowTimeout");
   const state = getState();
   const settings = getSettings();
 
@@ -29,6 +28,9 @@ export function setSlideshowTimeout(
     console.debug("Added new timer");
     slideshowTimer.on("done", () => handleTimeout(settings));
     slideshowTimer.on("tick", ms => console.debug("Timer: ", ms));
+    slideshowTimer.on("statusChanged", status =>
+      console.debug("Timer status:", status)
+    );
     slideshowTimer.start(timeout);
     window.ydbSlideshowTimeout = slideshowTimer;
   }

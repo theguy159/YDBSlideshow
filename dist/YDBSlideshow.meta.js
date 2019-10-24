@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        YDBSlideshow
-// @version     "0.3.1"
+// @version     "0.3.2"
 // @author      theguy159
 // @description An YDB plugin for automatic slideshow on derpibooru.org
 // @homepage    https://tehvoid.net

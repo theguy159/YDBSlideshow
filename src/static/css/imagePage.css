@@ -1,7 +1,6 @@
 #_ydb_ss_toggle_slideshow {
   display: inline-block;
 }
-
 #_ydb_ss_toggle_slideshow_random {
   z-index: 202;
   position: relative;
@@ -10,4 +9,12 @@
   z-index: 202;
   position: relative;
   user-select: none;
+}
+.hideUntilLoaded {
+  opacity: 0;
+}
+
+#image-display.loaded {
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
 }

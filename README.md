@@ -7,7 +7,7 @@
 - Automatically advance to the next picture or video
 - Skip video after specified threshold
 - Setting that makes the videos play until the end no matter the timeout set
-- Pause & resume (keyboard shortcut: `P`)
+- Pause & resume (keyboard shortcut: <kbd>P</kbd>)
 
 ## installation:
 
