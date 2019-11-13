@@ -11,25 +11,10 @@ module.exports = merge(common, {
       headers: {
         version: version,
         name: "YDBSlideshow",
-        match: [
-          "*://derpibooru.org/*",
-          "*://trixiebooru.org/*",
-          "*://www.derpibooru.org/*",
-          "*://www.trixiebooru.org/*",
-          "*://*.o53xo.orzgs6djmvrg633souxg64th.*.*/*",
-          "*://*.orzgs6djmvrg633souxg64th.*.*/*",
-          "*://*.o53xo.mrsxe4djmjxw64tvfzxxezy.*.*/*",
-          "*://*.mrsxe4djmjxw64tvfzxxezy.*.*/*"
-        ],
+        include: ["/http[s]*://(www.|)(trixie|derpi)booru.org/.*/"],
         exclude: [
-          "*://trixiebooru.org/*.json",
-          "*://derpibooru.org/*.json",
-          "*://www.trixiebooru.org/*.json",
-          "*://www.derpibooru.org/*.json",
-          "*://*.o53xo.orzgs6djmvrg633souxg64th.*.json",
-          "*://*.orzgs6djmvrg633souxg64th.*.json",
-          "*://*.o53xo.mrsxe4djmjxw64tvfzxxezy.*.json",
-          "*://*.mrsxe4djmjxw64tvfzxxezy.*.json"
+          "/http[s]*://(www.|)(trixie|derpi)booru.org/adverts/.*/",
+          "/http[s]*://(www.|)(trixie|derpi)booru.org/.*.json.*/"
         ],
         grant: ["GM_addStyle"],
         runAt: "document-end",
