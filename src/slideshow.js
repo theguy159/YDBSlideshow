@@ -120,8 +120,11 @@ export function handleImageListRandomSlideshow() {
   const currentUrl = new URL(window.location.href);
   let url = "";
 
-  if (currentUrl.pathname.startsWith("/search")) {
-    const q = currentUrl.searchParams.get("q");
+  if (
+    currentUrl.pathname.startsWith("/search") ||
+    currentUrl.pathname === "/images"
+  ) {
+    const q = currentUrl.searchParams.get("q") || "*";
     url = `/search?q=${q}&random_image=y`;
   } else if (currentUrl.pathname.startsWith("/galleries")) {
     url = `${currentUrl.pathname}/random`;
@@ -149,6 +152,7 @@ export function handleImageListSequentialSlideshow() {
 
   if (
     currentUrl.pathname.startsWith("/search") ||
+    currentUrl.pathname === "/images" ||
     currentUrl.pathname === "/"
   ) {
     const firstImage = document.querySelector(
