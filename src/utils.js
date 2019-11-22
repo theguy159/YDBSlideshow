@@ -150,11 +150,16 @@ function resumeSlideshow() {
 export function handlePauseResume() {
   const state = getState();
   const { slideshowEnabled } = state;
-  if (!window.ydbSlideshowPaused && slideshowEnabled) {
-    pauseSlideshow();
-    window.ydbSlideshowPaused = true;
-  } else {
-    resumeSlideshow();
-    window.ydbSlideshowPaused = false;
+  if (
+    document.activeElement.type === undefined ||
+    !document.activeElement.type.includes("text")
+  ) {
+    if (!window.ydbSlideshowPaused && slideshowEnabled) {
+      pauseSlideshow();
+      window.ydbSlideshowPaused = true;
+    } else {
+      resumeSlideshow();
+      window.ydbSlideshowPaused = false;
+    }
   }
 }
