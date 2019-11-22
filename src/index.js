@@ -15,7 +15,8 @@ import {
   register,
   getState,
   getSettings,
-  handlePauseResume
+  handlePauseResume,
+  myAddElem
 } from "./utils";
 
 import {
@@ -23,14 +24,15 @@ import {
   setSlideshowTimeout,
   handleToggleSlideshowRandomCheckbox,
   handleTimeout,
-  handleVideo
+  handleVideo,
+  handleImageListRandomSlideshow,
+  handleImageListSequentialSlideshow
 } from "./slideshow";
 const commonCSS = require("./static/css/style.css").toString();
 const imagePageCSS = require("./static/css/imagePage.css").toString();
 const hideCSS = require("./static/css/hide.css").toString();
 
 (function() {
-  if (window.location.pathname === "/") return;
   initCommon();
   initState();
   initSettings();
@@ -48,9 +50,8 @@ const hideCSS = require("./static/css/hide.css").toString();
   } else {
     injectStyle(hideCSS);
   }
-  if (document.querySelector("#content>.block:first-child") === null) return;
   const objects = {
-    toggleSlideshow: addElem(
+    toggleSlideshow: myAddElem(
       "a",
       {
         id: "_ydb_ss_toggle_slideshow",
@@ -60,7 +61,7 @@ const hideCSS = require("./static/css/hide.css").toString();
       },
       document.body
     ),
-    toggleSlideshowRandomLabel: addElem(
+    toggleSlideshowRandomLabel: myAddElem(
       "label",
       {
         id: "_ydb_ss_label_slideshow_random",
@@ -69,7 +70,7 @@ const hideCSS = require("./static/css/hide.css").toString();
       },
       document.querySelector("#content>.block:first-child")
     ),
-    toggleSlideshowRandom: addElem(
+    toggleSlideshowRandom: myAddElem(
       "input",
       {
         id: "_ydb_ss_toggle_slideshow_random",
@@ -84,7 +85,7 @@ const hideCSS = require("./static/css/hide.css").toString();
       },
       document.querySelector("#content>.block:first-child")
     ),
-    pauseResumeSlideshowButton: addElem(
+    pauseResumeSlideshowButton: myAddElem(
       "a",
       {
         id: "_ydb_ss_pause_resume_button",
@@ -95,11 +96,32 @@ const hideCSS = require("./static/css/hide.css").toString();
       },
       document.querySelector("#content>.block:first-child")
     ),
+    imageListRandomSlideshow: myAddElem(
+      "a",
+      {
+        id: "_ydb_ss_image_list_random_slideshow",
+        innerHTML:
+          '<i class="fa fa-random"></i> <span class="hide-mobile hide-limited-desktop">Random slideshow</span>',
+        events: [{ t: "click", f: handleImageListRandomSlideshow }]
+      },
+      document.querySelector("#imagelist_container > section div.flex__right")
+    ),
+    imageListSequentialSlideshow: myAddElem(
+      "a",
+      {
+        id: "_ydb_ss_image_list_sequential_slideshow",
+        innerHTML:
+          '<i class="fa fa-play"></i> <span class="hide-mobile hide-limited-desktop">Sequential slideshow</span>',
+        events: [{ t: "click", f: handleImageListSequentialSlideshow }]
+      },
+      document.querySelector("#imagelist_container > section div.flex__right")
+    ),
     disableFsButton: document.getElementById("_ydb_fs_disable"),
     image: document.getElementById("image-display")
   };
   if (
     settings.slideshowHideImageUntilLoaded &&
+    objects.image !== null &&
     objects.image.tagName.toLowerCase() !== "video"
   ) {
     if (objects.image.complete) {

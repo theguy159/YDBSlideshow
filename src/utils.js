@@ -163,3 +163,22 @@ export function handlePauseResume() {
     }
   }
 }
+
+// Ensure that the selector exists before running addElem
+export function myAddElem(type, elem, selector) {
+  if (selector === null) {
+    console.warn("Selector does not exist");
+    console.log("type", type);
+    console.log("elem", elem);
+    console.log("selector", selector);
+  } else {
+    return addElem(type, elem, selector);
+  }
+}
+
+export function enableYDBFS() {
+  localStorage["_ydb_fs_state"] = JSON.stringify({
+    ...JSON.parse(localStorage["_ydb_fs_state"]),
+    enabled: true
+  });
+}

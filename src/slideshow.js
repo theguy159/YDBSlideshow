@@ -1,4 +1,10 @@
-import { write, getState, getSettings, updateSettings } from "./utils";
+import {
+  write,
+  getState,
+  getSettings,
+  updateSettings,
+  enableYDBFS
+} from "./utils";
 import { YDB_CONTAINER } from "./constants";
 import Timer from "tiny-timer";
 
@@ -107,4 +113,64 @@ export function handleVideo() {
       }
     });
   }
+}
+export function handleImageListRandomSlideshow() {
+  const state = getState();
+  const settings = getSettings();
+  const currentUrl = new URL(window.location.href);
+  let url = "";
+
+  if (currentUrl.pathname.startsWith("/search")) {
+    const q = currentUrl.searchParams.get("q");
+    url = `/search?q=${q}&random_image=y`;
+  } else if (currentUrl.pathname.startsWith("/galleries")) {
+    url = `${currentUrl.pathname}/random`;
+  } else if (currentUrl.pathname === "/") {
+    url = "/search?q=*&random_image=y";
+  } else {
+    console.log("I don't know where I am!");
+    return false;
+  }
+
+  state.slideshowEnabled = true;
+  write(state);
+
+  settings.slideshowRandom = true;
+  updateSettings(settings);
+
+  if (settings.slideshowFullscreen) enableYDBFS();
+  unsafeWindow.location.href = url;
+}
+export function handleImageListSequentialSlideshow() {
+  const state = getState();
+  const settings = getSettings();
+  const currentUrl = new URL(window.location.href);
+  let url = "";
+
+  if (
+    currentUrl.pathname.startsWith("/search") ||
+    currentUrl.pathname === "/"
+  ) {
+    const firstImage = document.querySelector(
+      "#imagelist_container div.media-box__content a"
+    );
+
+    url = firstImage.href;
+  } else if (currentUrl.pathname.startsWith("/galleries")) {
+    url = document.querySelector(
+      "#imagelist_container div.media-box__content a"
+    ).href;
+  } else {
+    console.log("I don't know where I am!");
+    return false;
+  }
+
+  state.slideshowEnabled = true;
+  write(state);
+
+  settings.slideshowRandom = false;
+  updateSettings(settings);
+
+  if (settings.slideshowFullscreen) enableYDBFS();
+  unsafeWindow.location.href = url;
 }
