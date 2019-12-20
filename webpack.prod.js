@@ -11,10 +11,10 @@ module.exports = merge(common, {
       headers: {
         version: version,
         name: "YDBSlideshow",
-        include: ["/http[s]*://(www.|)(trixie|derpi)booru.org/.*/"],
+        include: ["/http[s]*://(www.|philomena.|)(trixie|derpi)booru.org/.*/"],
         exclude: [
-          "/http[s]*://(www.|)(trixie|derpi)booru.org/adverts/.*/",
-          "/http[s]*://(www.|)(trixie|derpi)booru.org/.*.json.*/"
+          "/http[s]*://(www.|philomena.|)(trixie|derpi)booru.org/adverts/.*/",
+          "/http[s]*://(www.|philomena.|)(trixie|derpi)booru.org/.*.json.*/"
         ],
         grant: ["GM_addStyle"],
         runAt: "document-end",
