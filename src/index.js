@@ -104,7 +104,7 @@ const hideCSS = require("./static/css/hide.css").toString();
           '<i class="fa fa-random"></i> <span class="hide-mobile hide-limited-desktop">Random slideshow</span>',
         events: [{ t: "click", f: handleImageListRandomSlideshow }]
       },
-      document.querySelector("#imagelist_container > section div.flex__right")
+      document.querySelector("#imagelist-container > section div.flex__right")
     ),
     imageListSequentialSlideshow: myAddElem(
       "a",
@@ -114,7 +114,7 @@ const hideCSS = require("./static/css/hide.css").toString();
           '<i class="fa fa-play"></i> <span class="hide-mobile hide-limited-desktop">Sequential slideshow</span>',
         events: [{ t: "click", f: handleImageListSequentialSlideshow }]
       },
-      document.querySelector("#imagelist_container > section div.flex__right")
+      document.querySelector("#imagelist-container > section div.flex__right")
     ),
     disableFsButton: document.getElementById("_ydb_fs_disable"),
     image: document.getElementById("image-display")

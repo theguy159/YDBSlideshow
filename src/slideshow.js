@@ -125,11 +125,11 @@ export function handleImageListRandomSlideshow() {
     currentUrl.pathname === "/images"
   ) {
     const q = currentUrl.searchParams.get("q") || "*";
-    url = `/search?q=${q}&random_image=y`;
+    url = `/images/random?q=${q}`;
   } else if (currentUrl.pathname.startsWith("/galleries")) {
     url = `${currentUrl.pathname}/random`;
   } else if (currentUrl.pathname === "/") {
-    url = "/search?q=*&random_image=y";
+    url = "/images/random?q=*";
   } else {
     console.log("I don't know where I am!");
     return false;
@@ -156,13 +156,13 @@ export function handleImageListSequentialSlideshow() {
     currentUrl.pathname === "/"
   ) {
     const firstImage = document.querySelector(
-      "#imagelist_container div.media-box__content a"
+      "#imagelist-container div.media-box__content a"
     );
 
     url = firstImage.href;
   } else if (currentUrl.pathname.startsWith("/galleries")) {
     url = document.querySelector(
-      "#imagelist_container div.media-box__content a"
+      "#imagelist-container div.media-box__content a"
     ).href;
   } else {
     console.log("I don't know where I am!");
