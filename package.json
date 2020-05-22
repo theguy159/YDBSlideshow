@@ -1,6 +1,6 @@
 {
   "name": "YDBSlideshow",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "An YDB plugin for automatic slideshow on derpibooru.org",
   "author": "theguy159",
   "homepage": "https://tehvoid.net",
@@ -18,7 +18,7 @@
     "to-string-loader": "^1.1.6",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0",
+    "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^4.2.2",
     "webpack-userscript": "^2.4.0"
   },
