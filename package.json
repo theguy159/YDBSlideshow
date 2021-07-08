@@ -23,6 +23,7 @@
     "webpack-userscript": "^2.4.0"
   },
   "dependencies": {
+    "glob-parent": "^5.1.2",
     "tiny-timer": "^1.4.0"
   }
 }
