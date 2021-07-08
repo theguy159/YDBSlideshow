@@ -3,7 +3,7 @@ import {
   YDB_CONTAINER,
   YDB_LINK,
   YDB_HIDDEN,
-  YDB_STATE
+  YDB_STATE,
 } from "./constants";
 
 import { toggleSlideshow } from "./slideshow";
@@ -45,36 +45,41 @@ export function register() {
         type: "input",
         name: "Slideshow timeout (s)",
         parameter: "slideshowTimeout",
-        validation: { type: "int", min: 1, default: 15 }
+        validation: { type: "int", min: 1, default: 15 },
       },
       {
         type: "input",
         name: "Slideshow video skip threshold (s)",
         parameter: "slideshowVideoSinglePlaybackThreshold",
-        validation: { type: "int", default: 15 }
+        validation: { type: "int", default: 15 },
+      },
+      {
+        type: "checkbox",
+        name: "Pause video when pausing slideshow",
+        parameter: "slideshowVideoPause",
       },
       {
         type: "checkbox",
         name: "Skip if video is longer than the threshold",
-        parameter: "shouldSkipVideoTimeout"
+        parameter: "shouldSkipVideoTimeout",
       },
       {
         type: "checkbox",
         name: "Video will always play to the end",
-        parameter: "slideshowVideoPlaysRegardless"
+        parameter: "slideshowVideoPlaysRegardless",
       },
       { type: "checkbox", name: "Random?", parameter: "slideshowRandom" },
       {
         type: "checkbox",
         name: "Auto fullscreen? (requires Resurrected Derp Fullscreen)",
-        parameter: "slideshowFullscreen"
+        parameter: "slideshowFullscreen",
       },
       {
         type: "checkbox",
         name: "Hide image until fully loaded",
-        parameter: "slideshowHideImageUntilLoaded"
-      }
-    ]
+        parameter: "slideshowHideImageUntilLoaded",
+      },
+    ],
   };
 }
 
@@ -98,21 +103,21 @@ export function initState() {
 }
 
 export function initSettings() {
-  const settings = getSettings();
   // Initialize settings
-  if (settings.slideshowTimeout === undefined) settings.slideshowTimeout = 15;
-  if (settings.slideshowVideoSinglePlaybackThreshold === undefined)
-    settings.slideshowVideoSinglePlaybackThreshold = 15;
-  if (settings.shouldSkipVideoTimeout === undefined)
-    settings.shouldSkipVideoTimeout = false;
-  if (settings.slideshowRandom === undefined) settings.slideshowRandom = false;
-  if (settings.slideshowFullscreen === undefined)
-    settings.slideshowFullscreen = false;
-  if (settings.slideshowVideoPlaysRegardless === undefined)
-    settings.slideshowVideoPlaysRegardless = false;
-  if (settings.slideshowHideImageUntilLoaded === undefined)
-    settings.slideshowHideImageUntilLoaded = false;
-  localStorage[YDB_CONTAINER] = JSON.stringify(settings);
+  const settings = {
+    slideshowTimeout: 15,
+    slideshowVideoSinglePlaybackThreshold: 15,
+    shouldSkipVideoTimeout: false,
+    slideshowRandom: false,
+    slideshowFullscreen: false,
+    slideshowVideoPlaysRegardless: false,
+    slideshowHideImageUntilLoaded: false,
+    slideshowVideoPause: false,
+  };
+  localStorage[YDB_CONTAINER] = JSON.stringify({
+    ...settings,
+    ...getSettings(),
+  });
 }
 
 export function updateSettings(settings) {
@@ -124,27 +129,42 @@ export function injectStyle(style) {
 }
 
 function pauseSlideshow() {
+  console.debug("pauseSlideshow");
+  const state = getState();
   const maybeVideo = document.getElementById("image-display");
+  const settings = getSettings();
   let isVideo = false;
   if (maybeVideo.tagName.toLowerCase() === "video") isVideo = true;
-  if (isVideo) maybeVideo.pause();
+  if (isVideo && settings.slideshowVideoPause) maybeVideo.pause();
   if (window.ydbSlideshowTimeout) {
     window.ydbSlideshowTimeout.pause();
-    document.getElementById("_ydb_ss_pause_resume_button").innerHTML = "Resume";
   }
+  document.getElementById("_ydb_ss_pause_resume_button").innerHTML = "Resume";
+
+  state.slideshowEnabled = false;
+  write(state);
+
+  window.ydbSlideshowPaused = true;
 }
 
 function resumeSlideshow() {
+  console.debug("resumeSlideshow");
   const maybeVideo = document.getElementById("image-display");
+  const settings = getSettings();
+  const state = getState();
   let isVideo = false;
   if (maybeVideo.tagName.toLowerCase() === "video") isVideo = true;
-  if (isVideo) maybeVideo.play();
+  if (isVideo && settings.slideshowVideoPause) maybeVideo.play();
   if (window.ydbSlideshowTimeout) {
+    state.slideshowEnabled = true;
+    write(state);
+
     window.ydbSlideshowTimeout.resume();
   } else {
     toggleSlideshow();
   }
   document.getElementById("_ydb_ss_pause_resume_button").innerHTML = "Pause";
+  window.ydbSlideshowPaused = false;
 }
 
 export function handlePauseResume() {
@@ -156,10 +176,8 @@ export function handlePauseResume() {
   ) {
     if (!window.ydbSlideshowPaused && slideshowEnabled) {
       pauseSlideshow();
-      window.ydbSlideshowPaused = true;
     } else {
       resumeSlideshow();
-      window.ydbSlideshowPaused = false;
     }
   }
 }
@@ -179,6 +197,6 @@ export function myAddElem(type, elem, selector) {
 export function enableYDBFS() {
   localStorage["_ydb_fs_state"] = JSON.stringify({
     ...JSON.parse(localStorage["_ydb_fs_state"]),
-    enabled: true
+    enabled: true,
   });
 }

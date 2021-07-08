@@ -3,7 +3,7 @@ import {
   getState,
   getSettings,
   updateSettings,
-  enableYDBFS
+  enableYDBFS,
 } from "./utils";
 import { YDB_CONTAINER } from "./constants";
 import Timer from "tiny-timer";
@@ -33,8 +33,8 @@ export function setSlideshowTimeout(
     const slideshowTimer = new Timer({ interval: 1000 });
     console.debug("Added new timer");
     slideshowTimer.on("done", () => handleTimeout(settings));
-    slideshowTimer.on("tick", ms => console.debug("Timer: ", ms));
-    slideshowTimer.on("statusChanged", status =>
+    slideshowTimer.on("tick", (ms) => console.debug("Timer: ", ms));
+    slideshowTimer.on("statusChanged", (status) =>
       console.debug("Timer status:", status)
     );
     slideshowTimer.start(timeout);
@@ -42,27 +42,44 @@ export function setSlideshowTimeout(
   }
 }
 
+const initSlideshow = () => {
+  const settings = getSettings();
+  const image = document.getElementById("image-display");
+  const resumeBtn = document.getElementById("_ydb_ss_pause_resume_button");
+  resumeBtn.innerHTML = "Pause";
+  window.ydbSlideshowPaused = false;
+  if (settings.slideshowFullscreen) {
+    const fullscreenEnableBtn = document.getElementById("_ydb_fs_enable");
+    if (fullscreenEnableBtn)
+      fullscreenEnableBtn.dispatchEvent(new MouseEvent("click"));
+  }
+  if (image.tagName.toLowerCase() !== "video") {
+    setSlideshowTimeout();
+  } else {
+    handleVideo();
+  }
+};
+
 export function toggleSlideshow() {
   const state = getState();
   const settings = getSettings();
-  const image = document.getElementById("image-display");
   state.slideshowEnabled = !state.slideshowEnabled;
   console.debug("Setting slideshow to ", state.slideshowEnabled);
   write(state);
-  let enabled = state.slideshowEnabled;
+  const enabled = state.slideshowEnabled;
   if (enabled) {
-    if (settings.slideshowFullscreen)
-      document
-        .getElementById("_ydb_fs_enable")
-        .dispatchEvent(new MouseEvent("click"));
-    if (image.tagName.toLowerCase() !== "video") {
-      setSlideshowTimeout();
-    } else {
-      handleVideo();
-    }
+    initSlideshow();
   } else if (window.ydbSlideshowTimeout) {
     window.ydbSlideshowTimeout.stop();
   }
+}
+
+// handle clicking the "Start slideshow" button
+export function startSlideshow() {
+  const state = getState();
+  state.slideshowEnabled = true;
+  write(state);
+  initSlideshow();
 }
 
 export function handleToggleSlideshowRandomCheckbox() {
@@ -83,11 +100,18 @@ export function handleVideo() {
     let thresholdExceeded = false;
     video.addEventListener("seeked", () => {
       if (nearEnd) {
-        if (settings.slideshowTimeout > video.duration && !playedOnce)
+        if (
+          settings.slideshowTimeout > video.duration &&
+          !playedOnce &&
+          !window.ydbSlideshowPaused
+        )
           setSlideshowTimeout(
             (settings.slideshowTimeout - video.duration) * 1000
           );
-        if (video.duration >= settings.slideshowTimeout)
+        if (
+          video.duration >= settings.slideshowTimeout &&
+          !window.ydbSlideshowPaused
+        )
           handleTimeout(settings);
         playedOnce = true;
       }
@@ -98,7 +122,8 @@ export function handleVideo() {
         !settings.slideshowVideoPlaysRegardless &&
         settings.shouldSkipVideoTimeout &&
         video.currentTime > settings.slideshowVideoSinglePlaybackThreshold &&
-        !thresholdExceeded
+        !thresholdExceeded &&
+        !window.ydbSlideshowPaused
       ) {
         thresholdExceeded = true;
         handleTimeout(settings);
@@ -106,7 +131,8 @@ export function handleVideo() {
       if (
         !settings.slideshowVideoPlaysRegardless &&
         video.currentTime > settings.slideshowTimeout &&
-        !thresholdExceeded
+        !thresholdExceeded &&
+        !window.ydbSlideshowPaused
       ) {
         thresholdExceeded = true;
         handleTimeout(settings);

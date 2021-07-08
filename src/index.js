@@ -3,7 +3,7 @@ import {
   YDB_CONTAINER,
   YDB_STATE,
   YDB_LINK,
-  YDB_HIDDEN
+  YDB_HIDDEN,
 } from "./constants";
 
 import {
@@ -16,23 +16,24 @@ import {
   getState,
   getSettings,
   handlePauseResume,
-  myAddElem
+  myAddElem,
 } from "./utils";
 
 import {
   toggleSlideshow,
+  startSlideshow,
   setSlideshowTimeout,
   handleToggleSlideshowRandomCheckbox,
   handleTimeout,
   handleVideo,
   handleImageListRandomSlideshow,
-  handleImageListSequentialSlideshow
+  handleImageListSequentialSlideshow,
 } from "./slideshow";
 const commonCSS = require("./static/css/style.css").toString();
 const imagePageCSS = require("./static/css/imagePage.css").toString();
 const hideCSS = require("./static/css/hide.css").toString();
 
-(function() {
+(function () {
   initCommon();
   initState();
   initSettings();
@@ -51,13 +52,13 @@ const hideCSS = require("./static/css/hide.css").toString();
     injectStyle(hideCSS);
   }
   const objects = {
-    toggleSlideshow: myAddElem(
+    startSlideshow: myAddElem(
       "a",
       {
-        id: "_ydb_ss_toggle_slideshow",
+        id: "_ydb_ss_start_slideshow",
         className: "header__link",
-        innerHTML: "Toggle slideshow",
-        events: [{ t: "click", f: toggleSlideshow }]
+        innerHTML: "Start slideshow",
+        events: [{ t: "click", f: startSlideshow }],
       },
       document.body
     ),
@@ -66,7 +67,7 @@ const hideCSS = require("./static/css/hide.css").toString();
       {
         id: "_ydb_ss_label_slideshow_random",
         for: "_ydb_ss_toggle_slideshow_random",
-        innerHTML: "Random slideshow? "
+        innerHTML: "Random slideshow? ",
       },
       document.querySelector("#content>.block:first-child")
     ),
@@ -79,9 +80,9 @@ const hideCSS = require("./static/css/hide.css").toString();
         events: [
           {
             t: "click",
-            f: handleToggleSlideshowRandomCheckbox
-          }
-        ]
+            f: handleToggleSlideshowRandomCheckbox,
+          },
+        ],
       },
       document.querySelector("#content>.block:first-child")
     ),
@@ -92,7 +93,7 @@ const hideCSS = require("./static/css/hide.css").toString();
         className: "",
         style: { display: "none" },
         innerHTML: slideshowEnabled ? "Pause" : "Resume",
-        events: [{ t: "click", f: handlePauseResume }]
+        events: [{ t: "click", f: handlePauseResume }],
       },
       document.querySelector("#content>.block:first-child")
     ),
@@ -102,7 +103,7 @@ const hideCSS = require("./static/css/hide.css").toString();
         id: "_ydb_ss_image_list_random_slideshow",
         innerHTML:
           '<i class="fa fa-random"></i> <span class="hide-mobile hide-limited-desktop">Random slideshow</span>',
-        events: [{ t: "click", f: handleImageListRandomSlideshow }]
+        events: [{ t: "click", f: handleImageListRandomSlideshow }],
       },
       document.querySelector("#imagelist-container > section div.flex__right")
     ),
@@ -112,12 +113,12 @@ const hideCSS = require("./static/css/hide.css").toString();
         id: "_ydb_ss_image_list_sequential_slideshow",
         innerHTML:
           '<i class="fa fa-play"></i> <span class="hide-mobile hide-limited-desktop">Sequential slideshow</span>',
-        events: [{ t: "click", f: handleImageListSequentialSlideshow }]
+        events: [{ t: "click", f: handleImageListSequentialSlideshow }],
       },
       document.querySelector("#imagelist-container > section div.flex__right")
     ),
     disableFsButton: document.getElementById("_ydb_fs_disable"),
-    image: document.getElementById("image-display")
+    image: document.getElementById("image-display"),
   };
   if (
     settings.slideshowHideImageUntilLoaded &&
@@ -135,7 +136,7 @@ const hideCSS = require("./static/css/hide.css").toString();
     document
       .getElementsByClassName("header__force-right")[0]
       .insertBefore(
-        objects.toggleSlideshow,
+        objects.startSlideshow,
         document.getElementsByClassName("header__force-right")[0].childNodes[0]
       );
 
@@ -158,7 +159,7 @@ const hideCSS = require("./static/css/hide.css").toString();
       });
     }
   }
-  unsafeWindow.addEventListener("keydown", e => {
+  unsafeWindow.addEventListener("keydown", (e) => {
     if (e.code === "KeyP") handlePauseResume();
   });
 })();
